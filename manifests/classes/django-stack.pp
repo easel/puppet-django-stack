@@ -7,21 +7,13 @@ class django-stack {
     include varnish
     include nginx
     include apache
+    include solr
     varnish::instance { "django-stack-varnish":
         address    => ["127.0.0.1:80"],
                    admin_port => "6083",
                    #vcl_file   => "puppet:///barproject/varnish.vcl",
                    corelimit  => "unlimited",
     }
-    #postgres::role { "django_stack":
-    #    ensure => present,
-    #    password => "django_stack",
-    #}
-    #postgres::database { "django_stack":
-    #    ensure => present,
-    #    owner => "django_stack",
-    #    require => Postgres::Role["django_stack"]
-    #}
 }
 
 
