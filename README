@@ -1,0 +1,12 @@
+Basic Django stack. Very much work-in-progress, but it will pull in the right dependencies on CentOS 5.
+
+Requires:
+   python2
+   postgresql
+   apache
+   nginx
+   varnish
+
+
+See puppet-skeleton to get started the easy way.
+   
