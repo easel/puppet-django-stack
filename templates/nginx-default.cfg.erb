@@ -1,0 +1,159 @@
+# You may add here your
+# server {
+#	...
+# }
+# statements for each of your virtual hosts
+
+proxy_redirect              off;
+proxy_set_header            Host $host;
+proxy_set_header            X-Real-IP $remote_addr;
+proxy_set_header            X-Forwarded-For $proxy_add_x_forwarded_for;
+
+server {
+        listen ${ip}:443 default ssl;
+	ssl_certificate      /etc/ssl/certs/wisertogether.com.crt;
+	ssl_certificate_key  /etc/ssl/private/wisertogether.com.key;
+	location / {
+		rewrite (.*) https://www.mywiserhealth.com$1 permanent;
+	}
+	
+}
+
+server {
+        listen %{ip}:80;
+        if ($http_x_forwarded_proto = (http)) {
+            rewrite (.*) https://$host$1 permanent;
+        } 
+
+        add_header "Strict-Transport-Security" "max-age=16070400; includeSubDomains";
+        location ~ /\w+/\w+ {
+            rewrite (.*) https://www.mywiserhealth.com$1 permanent;
+	}
+
+        location ^/pregnancy$ {
+            #proxy_pass  http://127.0.0.1:80/;
+            proxy_pass  http://127.0.0.1:8001/;
+	}
+
+        location ^/pregnancy/$ {
+            #proxy_pass  http://127.0.0.1:80/;
+            proxy_pass  http://127.0.0.1:8001/;
+	}
+
+        location / {
+            #proxy_pass  http://127.0.0.1:80/;
+            proxy_pass  http://127.0.0.1:8001/;
+	}
+        #location / {
+        #    rewrite (.*) https://www.mywiserhealth.com$1 permanent;
+        #}
+
+}
+
+server {
+        listen 10.98.129.9:80;
+        server_name www.mywiserhealth.com;
+        if ($http_x_forwarded_proto = (http)) {
+            rewrite (.*) https://$host$1 permanent;
+        } 
+
+        add_header "Strict-Transport-Security" "max-age=16070400; includeSubDomains";
+        location / {
+            #proxy_pass  http://127.0.0.1:80/;
+            proxy_pass  http://127.0.0.1:8001/;
+        }
+}
+
+
+# these are all the sites that come through the main load balancer but should not
+# be treated as a part of mywiserhealth.com
+server {
+        listen 10.98.129.9:80;
+        server_name demo.mywiserhealth.com;
+        server_name www.wisertogether.com;
+        server_name wisertogether.com;   
+        server_name dev.mywiserhealth.com;
+        server_name *.dev.mywiserhealth.com;
+        server_name qa.mywiserhealth.com;
+        server_name *.qa.mywiserhealth.com;
+        server_name stg.mywiserhealth.com;
+        server_name *.stg.mywiserhealth.com;
+        #if ($http_x_forwarded_proto = (http)) {
+        #    rewrite (.*) https://$host$1 permanent;
+        #} 
+
+        #add_header "Strict-Transport-Security" "max-age=16070400; includeSubDomains";
+        location / {
+            #proxy_pass  http://127.0.0.1:80/;
+            proxy_pass  http://127.0.0.1:8001/;
+        }
+}
+
+server {
+        listen 10.98.129.9:80;
+        server_name s.mywiserhealth.com;
+        server_name dv542xevt5bb9.cloudfront.net;
+
+        location / {
+            proxy_pass  http://localhost:8001/;
+        }
+}
+
+# redirect mywiserhealth.com directly to www.mywiserhealth.com
+server {
+        listen 10.98.129.9:80;
+	server_name mywiserhealth.com;
+
+	location / {
+		rewrite (.*) https://www.mywiserhealth.com$1 permanent;
+	}
+}
+       
+
+
+server {
+        listen 10.98.129.9:80;
+	server_name demo.wisermotion.com;
+
+	location / {
+		rewrite (.*) https://demo.mywiserhealth.com/motion/ permanent;
+	}
+}
+
+server {
+        listen 10.98.129.9:80;
+	server_name wiserpregnancy.com;
+	server_name *.wiserpregnancy.com;
+
+	location / {
+		rewrite (.*) http://www.wisertogether.com/ permanent;
+	}
+}
+       
+
+       
+
+#server {
+#listen   443;
+#server_name  localhost;
+
+
+#server {
+#listen   443;
+#server_name  localhost;
+
+#ssl  on;
+#ssl_certificate  cert.pem;
+#ssl_certificate_key  cert.key;
+
+#ssl_session_timeout  5m;
+
+#ssl_protocols  SSLv2 SSLv3 TLSv1;
+#ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+#ssl_prefer_server_ciphers   on;
+
+#location / {
+#root   html;
+#index  index.html index.htm;
+#}
+#}

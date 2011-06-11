@@ -1,0 +1,16 @@
+Alias /media/ /home/stg/mywiserhealth/media/
+Alias /static/ /home/stg/mywiserhealth/static/
+Alias /robots.txt /home/stg/mywiserhealth/static/robots.txt
+Alias /favicon.ico /home/stg/mywiserhealth/static/img/favicon.ico
+Alias /connect/admin_media/ /home/stg/mywiserhealth/parts/project_connect/django/contrib/admin/media/
+Alias /connect/upfiles/ /home/stg/mywiserhealth/connect/deployed/forum/upfiles
+
+SetEnvIf X-Forwarded-Proto https HTTPS=1
+
+WSGIDaemonProcess wiser-stg processes=2 threads=15
+WSGIProcessGroup wiser-stg
+WSGIPassAuthorization On
+WsgiScriptAlias /connect /home/stg/mywiserhealth/bin/project_connect.wsgi
+WsgiScriptAlias /profile /home/stg/mywiserhealth/bin/project_profile.wsgi
+WsgiScriptAlias /ssotest /home/stg/mywiserhealth/bin/project_safewaysso_test.wsgi
+WsgiScriptAlias / /home/stg/mywiserhealth/bin/project.wsgi

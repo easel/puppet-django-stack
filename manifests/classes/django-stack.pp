@@ -5,7 +5,7 @@ class django-stack {
     include python2
     include postgres
     include varnish
-    include nginx
+    #include nginx
     include apache
     include solr
     varnish::instance { "django-stack-varnish":
